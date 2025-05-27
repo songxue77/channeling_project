@@ -1,0 +1,52 @@
+name: CI
+on:
+  push:
+    branches:
+      - 'main'
+    paths-ignore:
+      - '.github/**'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  micro-service-name: 'channeling'
+  sub-service-name: 'api'
+
+jobs:
+  build-and-test:
+    runs-on: self-hosted-runner
+    steps:
+      - name: Check out the codes
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Setup Java environment
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          checkstyle-version: '10.12.1'
+          cache: 'gradle'
+      - name: Install jq
+        run: sudo apt-get-install jq
+      - name: Test All
+        run: |
+          ./gradlew testAll
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          arguments: |
+            clean
+            bootJar
+      - name: Cache Build Path
+        uses: actions/cache@v4
+        with:
+          path: |
+            build
+          key: ${{ runner.os }}-gradle-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-${{ github.sha }}
