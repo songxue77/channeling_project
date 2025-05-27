@@ -1,11 +1,11 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.4.5'
-	id 'io.spring.dependency-management' version '1.1.7'
+	java
+	id("org.springframework.boot") version ("3.4.5")
+	id("io.spring.dependency-management") version ("1.1.7")
 }
 
-group = 'com.songxue77'
-version = '0.0.1-SNAPSHOT'
+group = "com.songxue77"
+version = "0.0.1"
 
 java {
 	toolchain {
@@ -15,22 +15,25 @@ java {
 
 configurations {
 	compileOnly {
-		extendsFrom annotationProcessor
+		extendsFrom(annotationProcessor.get())
 	}
 }
 
 repositories {
 	mavenCentral()
+	maven("https://repo.spring.io/milestone")
+	maven("https://repo.spring.io/snapshot")
+	maven("https://packages.confluent.io/maven")
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation("org.springframework.boot:spring-boot-starter-web")
+	compileOnly("org.projectlombok:lombok")
+	annotationProcessor("org.projectlombok:lombok")
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
-tasks.named('test') {
+tasks.test {
 	useJUnitPlatform()
 }
